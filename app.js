@@ -1,12 +1,10 @@
-const express = require('express')
-const app = express()
-const port = 3000
+const express = require('express');
+const app = express();
+const port = 3000;
 const qrcode = require("qrcode-terminal");
 const fs= require("fs");
-
 // const{Client} = require("whatsapp-web.js");
-const { Client, Location, Poll, List, Buttons, LocalAuth ,LegacySessionAuth} = require("whatsapp-web.js");
-const { log } = require('console');
+const { Client, LocalAuth ,LegacySessionAuth} = require("whatsapp-web.js");
 
 // const SESSION_FILE_PATH = "./session.json";
 // let sessionCfg;
@@ -16,13 +14,10 @@ const { log } = require('console');
 // }
 
 const client = new Client({
-    // authStrategy: new LocalAuth(),
+    authStrnodeategy: new LocalAuth(),
     // authStrategy: new LegacySessionAuth({
     //     session: sessionData
     // }),
-    authStrategy: new LocalAuth({
-        clientId: "client-one"
-        }),
     // proxyAuthentication: { username: 'username', password: 'password' },
     puppeteer: { 
         // args: ['--proxy-server=proxy-server-that-requires-authentication.example.com'],
@@ -43,8 +38,8 @@ client.on('qr', (qr) => {
     qrcode.generate(qr, {small:true});
 });
 
-client.on('authenticated', (session) => {
-    console.log('AUTHENTICATED',session);
+client.on('authenticated', (session,sessionCfg) => {
+    console.log('AUTHENTICATED',session, sessionCfg);
     // sessionCfg = session;
     // fs.writeFile(SESSION_FILE_PATH,JSON.stringify(session), function(err){
     //     if(err){
@@ -71,21 +66,20 @@ app.get('/api', (req, res) => {
     let tujuan = req.query.tujuan;
     let pesan = req.query.pesan;
     let num = req.query.num;
-    let tujuan2;
 
     tujuan = tujuan.substring(1);
     tujuan = `62${tujuan}@c.us`;
-    tujuan2 = `62${tujuan}@c.us`;
-
-    for (let i = 0; i < num; i++) {
-        client.sendMessage(tujuan, pesan+i); 
-        client.sendMessage(tujuan2, pesan+i); 
+    
+    for (let i = 0; i <= num; i++) {
+        client.sendMessage(tujuan, pesan);  
     }
 
     res.json({status:false});
 
   })
   
+  
+
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })
