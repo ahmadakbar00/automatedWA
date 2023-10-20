@@ -1,4 +1,4 @@
-# automatedWA
+# AutomatedWA
 
 # Running
 - npm install
